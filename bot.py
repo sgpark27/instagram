@@ -1,14 +1,17 @@
 from instagrapi import Client
 import openai
-import schedule, time, random
+import time, random
 from datetime import datetime
 
-# OpenAI API 설정
-openai.api_key = "your_openai_api_key"
+# 환경변수 사용 시
+import os
+openai.api_key = os.environ["OPENAI_API_KEY"]
+username = os.environ["IG_USERNAME"]
+password = os.environ["IG_PASSWORD"]
 
 # 인스타 로그인
 cl = Client()
-cl.login("your_username", "your_password")
+cl.login(username, password)
 
 # 댓글 생성 함수
 def generate_comment(text):
@@ -24,7 +27,7 @@ def generate_comment(text):
 
 # 봇 실행 함수
 def run_bot():
-    posts = cl.hashtag_medias_recent("패션", amount=1)
+    posts = cl.hashtag_medias_recent("패션", amount=10)
     for post in posts:
         cl.media_like(post.id)
         caption = post.caption_text
@@ -32,17 +35,13 @@ def run_bot():
         cl.media_comment(post.id, comment)
         print(f"댓글 완료: {comment}")
 
-# 랜덤 시간 스케줄 설정
-def set_random_schedule():
-    hour = random.randint(18, 21)
-    minute = random.randint(0, 59)
-    time_str = f"{hour:02d}:{minute:02d}"
-    schedule.every().day.at(time_str).do(run_bot)
-    print(f"오늘 스케줄은 {time_str}")
+# 랜덤 딜레이 후 실행 (14~15시 사이)
+def run_bot_later():
+    delay_seconds = random.randint(0, 60 * 60)  # 최대 1시간
+    delay_minutes = delay_seconds // 60
+    print(f"⏱️ {delay_minutes}분 후에 run_bot() 실행 예정")
+    time.sleep(delay_seconds)
+    run_bot()
 
-# 매일 랜덤 시간 갱신
-set_random_schedule()
-
-while True:
-    schedule.run_pending()
-    time.sleep(60)
+# 실행 시작
+run_bot_later()
