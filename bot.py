@@ -1,8 +1,11 @@
 from instagrapi import Client
+
 import openai
 import os
 import time
 import random
+
+from openai import OpenAI
 
 # 환경 변수
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -21,10 +24,17 @@ def generate_comment(text):
     너무 기계적이지 않고, 감탄사나 이모지도 살짝 포함해줘.
     포스트 내용: "{text}"
     """
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[{"role": "user", "content": prompt}]
+)
+
+return response.choices[0].message.content.strip()
+
     return response['choices'][0]['message']['content'].strip()
 
 # 좋아요 자동 실행 함수
