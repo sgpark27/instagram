@@ -50,25 +50,36 @@ def auto_like_posts():
 # 댓글 자동 실행 함수
 def auto_comment():
     hashtags = ["패션", "코디", "ootd", "스타일"]
-    tag = random.choice(hashtags)
-    posts = cl.hashtag_medias_recent(tag, amount=1)
-    for post in posts:
-        try:
-            cl.media_like(post.id)
-            caption = post.caption_text
-            comment = generate_comment(caption)
-            cl.media_comment(post.id, comment)
-            print(f"💬 댓글 완료: {comment}")
-        except Exception as e:
-            print(f"❌ 댓글 실패: {e}")
+    total_comments = 0
+    target_comment_count = 10
+
+    for tag in random.sample(hashtags, len(hashtags)):
+        posts = cl.hashtag_medias_recent(tag, amount=10)
+        for post in posts:
+            try:
+                caption = post.caption_text
+                comment = generate_comment(caption)
+                cl.media_like(post.id)
+                cl.media_comment(post.id, comment)
+                total_comments += 1
+                print(f"💬 {total_comments}번째 댓글 완료: {comment}")
+
+                if total_comments >= target_comment_count:
+                    return  # 댓글 10개 완료되면 종료
+
+                time.sleep(random.uniform(20, 60))  # 자연스러운 딜레이
+            except Exception as e:
+                print(f"❌ 댓글 실패: {e}")
+                continue
 
 # 메인 실행 함수
 def run_bot():
     print("🚀 봇 시작: 좋아요 + 댓글 자동화")
     auto_like_posts()
-    time.sleep(random.uniform(60, 180))  # 댓글은 좋아요 이후 1~3분 후 실행
+    time.sleep(random.uniform(60, 180))  # 좋아요 후 댓글은 약간 쉬었다가
     auto_comment()
     print("✅ 봇 작업 완료!")
+
 
 # 실행 시작
 run_bot()
