@@ -29,7 +29,7 @@ def generate_comment(text):
 
 # 좋아요 자동 실행 함수
 def auto_like_posts():
-    hashtags = ["패션", "코디", "ootd", "스타일"]
+    hashtags = ["패션", "코디", "선팔", "맞팔", "스타일"]
     liked = 0
     target_like_count = 30
 
