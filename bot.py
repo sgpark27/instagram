@@ -18,24 +18,22 @@ cl.load_settings("session.json")
 cl.login(username, password)
 
 # 댓글 생성 함수
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
 def generate_comment(text):
     prompt = f"""
     다음 인스타그램 포스트 내용에 대해 20대 여성이 쓴 것처럼 귀엽고 자연스러운 칭찬 댓글 한 줄만 써줘.
     너무 기계적이지 않고, 감탄사나 이모지도 살짝 포함해줘.
     포스트 내용: "{text}"
     """
-from openai import OpenAI
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content.strip()
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
-response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": prompt}]
-)
-
-return response.choices[0].message.content.strip()
-
-    return response['choices'][0]['message']['content'].strip()
 
 # 좋아요 자동 실행 함수
 def auto_like_posts():
