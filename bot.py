@@ -11,7 +11,9 @@ password = os.environ["IG_PASSWORD"]
 
 # 인스타 로그인
 cl = Client()
+cl.load_settings("session.json")
 cl.login(username, password)
+
 
 # 댓글 생성 함수
 def generate_comment(text):
