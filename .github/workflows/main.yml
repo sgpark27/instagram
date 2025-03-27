@@ -1,0 +1,12 @@
+services:
+  - type: cron
+    name: insta-bot-daily
+    schedule: "0 18 * * *"  # 매일 18시 실행 (랜덤 시간 설정은 코드에서)
+    command: "python bot.py"
+    envVars:
+      - key: OPENAI_API_KEY
+        value: your_openai_key
+      - key: IG_USERNAME
+        value: your_instagram_id
+      - key: IG_PASSWORD
+        value: your_password
