@@ -1,7 +1,7 @@
 services:
   - type: cron
     name: insta-bot-daily
-    schedule: "0 18 * * *"  # 매일 18시 실행 (랜덤 시간 설정은 코드에서)
+    schedule: "0 14 * * *"   # 매일 14:00에 실행
     command: "python bot.py"
     envVars:
       - key: OPENAI_API_KEY
