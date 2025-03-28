@@ -82,7 +82,7 @@ def auto_comment():
 # 메인 실행 함수
 def run_bot():
     print("🚀 봇 시작: 좋아요 + 댓글 자동화")
-    auto_like_posts()
+    # auto_like_posts()
     time.sleep(random.uniform(60, 180))  # 좋아요 후 댓글은 약간 쉬었다가
     auto_comment()
     print("✅ 봇 작업 완료!")
