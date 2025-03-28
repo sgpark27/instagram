@@ -35,25 +35,6 @@ def generate_comment(text):
     return response.choices[0].message.content.strip()
 
 
-# 좋아요 자동 실행 함수
-def auto_like_posts():
-    hashtags = ["패션", "코디", "선팔", "맞팔", "스타일"]
-    liked = 0
-    target_like_count = 30
-
-    for tag in random.sample(hashtags, k=len(hashtags)):
-        posts = cl.hashtag_medias_recent(tag, amount=15)
-        for post in posts:
-            try:
-                cl.media_like(post.id)
-                liked += 1
-                print(f"❤️ 좋아요 {liked}개째 완료 - @{post.user.username}")
-                if liked >= target_like_count:
-                    return
-                time.sleep(random.uniform(10, 30))  # 10~30초 간격
-            except Exception as e:
-                print(f"❌ 좋아요 실패: {e}")
-                continue
 
 # 댓글 자동 실행 함수
 def auto_comment():
