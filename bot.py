@@ -22,17 +22,36 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+# 금지 키워드 리스트
+BANNED_KEYWORDS = ["팔로워", "선팔", "맞팔", "DM", "디엠", "링크", "할인", "무료"]
+
 def generate_comment(text):
     prompt = f"""
     다음 인스타그램 포스트 내용에 대해 20대 여성이 쓴 것처럼 귀엽고 자연스러운 칭찬 댓글 한 줄만 써줘.
     너무 기계적이지 않고, 감탄사나 이모지도 살짝 포함해줘.
+    절대 '팔로워', '맞팔', '선팔', 'DM', '링크', '무료', '할인' 같은 마케팅/홍보성 단어는 쓰지 말아줘.
     포스트 내용: "{text}"
     """
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response.choices[0].message.content.strip()
+
+    for _ in range(3):  # 최대 3번까지 시도
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        comment = response.choices[0].message.content.strip()
+
+        if any(bad in comment for bad in BANNED_KEYWORDS):
+            print(f"⚠️ 필터링됨: '{comment}' → 재생성 시도")
+            continue  # 금지 단어 포함 → 다시 생성
+
+        return comment
+
+    # 3번 다 실패하면 안전한 기본 문장 사용
+    return "분위기 너무 예뻐요! 🥰"
 
 # 좋아요 자동 실행 함수
 def auto_like_posts():
